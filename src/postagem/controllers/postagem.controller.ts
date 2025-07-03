@@ -9,10 +9,13 @@ import {
   ParseIntPipe,
   Post,
   Put,
+  UseGuards,
 } from '@nestjs/common';
+import { JwtAuthGuard } from '../../auth/guard/jwt-auth.guard';
 import { Postagem } from '../entities/postagem.entity';
 import { PostagemService } from '../services/postagem.service';
 
+@UseGuards(JwtAuthGuard)
 @Controller('/postagens')
 export class PostagemController {
   constructor(private readonly postagemService: PostagemService) {}
@@ -25,8 +28,8 @@ export class PostagemController {
 
   @Get('/:id')
   @HttpCode(HttpStatus.OK)
-  findByID(@Param('id', ParseIntPipe) id: number): Promise<Postagem> {
-    return this.postagemService.findByID(id);
+  findById(@Param('id', ParseIntPipe) id: number): Promise<Postagem> {
+    return this.postagemService.findById(id);
   }
 
   @Get('/titulo/:titulo')
@@ -37,7 +40,7 @@ export class PostagemController {
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  created(@Body() postagem: Postagem): Promise<Postagem> {
+  create(@Body() postagem: Postagem): Promise<Postagem> {
     return this.postagemService.create(postagem);
   }
 
